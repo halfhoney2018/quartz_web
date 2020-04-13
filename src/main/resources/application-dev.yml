@@ -1,0 +1,36 @@
+#服务端口
+server:
+  port: 8080
+#数据源的配置
+spring:
+  datasource:
+    druid:
+      url: jdbc:mysql://localhost:3306/quartz_web?useSSL=false&useUnicode=true&characterEncoding=UTF8&serverTimezone=GMT
+      username: root
+      password: mysqladmin
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      initial-size: 5
+      max-active: 30
+      min-idle: 5
+      max-wait: 60000
+      time-between-eviction-runs-millis: 300000
+      validation-query: SELECT 1 FROM DUAL
+      test-while-idle: true
+      max-pool-prepared-statement-per-connection-size: 50
+      filter: stat,wall
+      connection-properties: true
+      use-global-data-source-stat: true
+#mybatis持久化的配置
+mybatis:
+  mapper-locations: com/example/mapper/*.xml
+  type-aliases-package: com.example/demo/entity
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+#pagehelper
+
+pagehelper:
+#  dialect: mysql
+  reasonable: true
+  support-methods-arguments: true
+  params: count=countSql
