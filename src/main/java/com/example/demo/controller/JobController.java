@@ -36,10 +36,10 @@ public class JobController {
      * @throws Exception
      */
     @PostMapping(value = "/addjob")
-    public void addJob(@RequestParam(value = "jobClassName")String jobClassName,
+    public Map<String,Object> addJob(@RequestParam(value = "jobClassName")String jobClassName,
                        @RequestParam(value = "jobGroupName")String jobGroupName,
                        @RequestParam(value = "cronExpression")String cronExpression) throws Exception {
-        iQuartzJobService.addJob(jobClassName,jobGroupName,cronExpression);
+        return iQuartzJobService.addJob(jobClassName,jobGroupName,cronExpression);
     }
 
     /**

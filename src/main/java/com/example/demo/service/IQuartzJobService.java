@@ -18,8 +18,17 @@ public interface IQuartzJobService {
      * @param jobClassName 定时器名称
      * @param jobGroupName 定时器分组名称
      * @param cronExpression 定时器表达式
+     * @return  返回map数据
+     * msg:
+     *
+     * @throws SchedulerException
+     * @throws ClassNotFoundException
+     * @throws NoSuchMethodException
+     * @throws InvocationTargetException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
      */
-    public void addJob(String jobClassName,String jobGroupName,String cronExpression) throws SchedulerException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException;
+    public Map<String,Object> addJob(String jobClassName,String jobGroupName,String cronExpression) throws SchedulerException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException;
 
     /**
      * 定时器中断操作

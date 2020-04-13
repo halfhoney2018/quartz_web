@@ -33,11 +33,21 @@ public class QuartzJobServiceImpl implements IQuartzJobService {
     @Autowired
     private IJobAndTriggerService jobAndTriggerServiceervice;
     @Override
-    public void addJob(String jobClassName, String jobGroupName, String cronExpression) throws SchedulerException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+    public Map<String,Object> addJob(String jobClassName, String jobGroupName, String cronExpression) throws SchedulerException,  NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+        HashMap<String, Object> map = new HashMap<>();
         //启动调度器
         scheduler.start();
         //构建job信息
-        JobDetail jobDetail= JobBuilder.newJob(getClasszz(jobClassName).getClass()).withIdentity(jobClassName,jobGroupName).build();
+        JobDetail jobDetail= null;
+        try {
+            jobDetail = JobBuilder.newJob(getClasszz(jobClassName).getClass()).withIdentity(jobClassName,jobGroupName).build();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            log.error("class类未找到："+e);
+            map.put("state","false");
+            map.put("msg","当前任务出错，原因为：请求的ClassName不存在");
+            return map;
+        }
         //任务执行时间
         CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule(cronExpression);
         CronTrigger trigger = TriggerBuilder.newTrigger().withIdentity(jobClassName, jobGroupName).withSchedule(cronScheduleBuilder).build();
@@ -45,14 +55,16 @@ public class QuartzJobServiceImpl implements IQuartzJobService {
             Date date = scheduler.scheduleJob(jobDetail, trigger);
             log.info(date.toString());
         }catch (SchedulerException e){
-            System.out.println("定时任务创建失败");
-            try {
-                throw new Exception("创建定时任务失败");
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
+            log.error("定时任务创建失败");
+//            log.error("class类未找到："+e);
+            map.put("state","false");
+            map.put("msg",e);
+            return map;
+//            throw new Exception("创建定时任务失败");
         }
-
+        map.put("state","true");
+        map.put("msg","定时任务创建成功");
+        return map;
     }
 
     @Override
